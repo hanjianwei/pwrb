@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+
+require 'pwrb'
+require 'optparse'
+
+begin
+  options = {}
+
+  optparse = OptionParser.new do |opts|
+    opts.banner = "Usage: pw add|update|edit|list|copy|remove [user@domain] [options]"
+    opts.separator ""
+    opts.separator "Specific options:"
+
+    opts.on('-h', '--help', 'Display help message') do
+      puts opts
+      exit
+    end
+
+    opts.on('-p', '--print', 'Print password in text') do
+      options[:print] = true
+    end
+  end
+
+  optparse.parse!
+
+  aliases = {'cp' => 'copy',
+             'ls' => 'list',
+             'up' => 'update',
+             'create' => 'add',
+             'rm' => 'remove',
+             'delete' => 'remove',
+             'del' => 'remove'}
+
+  cmd = ARGV.shift
+  cmd = aliases[cmd] if aliases[cmd]
+
+  unless ['list', 'copy', 'update', 'remove', 'add', 'edit'].include?(cmd)
+    puts "Command not found: #{cmd}" if cmd
+    puts optparse
+    exit 1
+  end
+
+  pattern = ARGV.shift
+  abort("Unknown arguments: #{ARGV}") unless ARGV.empty?
+
+  if pattern
+    args = pattern.split('@', -1)
+
+    abort("Unknow pattern: #{pattern}") if args.length > 2
+
+    options[:site] = args.last
+    options[:user] = args.first if args.length == 2
+  end
+
+  PasswordDB.new(options).send cmd
+end
