@@ -19,7 +19,7 @@ Or install it yourself as:
 ## Usage
 
 ``` sh
-pw -h
+pwrb -h
 ```
 
 ## Contributing

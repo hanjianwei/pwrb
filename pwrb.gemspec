@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency('gpgme', "~> 2.0.1")
   gem.add_runtime_dependency('tabularize', "~> 0.2.9")
   gem.add_runtime_dependency('clipboard', "~> 1.0.1")
+  gem.add_runtime_dependency('highline', "~> 1.6.15")
 
   gem.add_development_dependency "bundler", ">= 1.2.3"
 end

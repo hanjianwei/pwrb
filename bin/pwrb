@@ -54,5 +54,5 @@ begin
     options[:user] = args.first if args.length == 2
   end
 
-  PasswordDB.new(options).send cmd
+  Pwrb::PasswordDB.new(options).send cmd
 end
