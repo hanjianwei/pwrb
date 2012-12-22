@@ -1,5 +1,6 @@
-require 'highline/import'
 require 'clipboard'
+require 'highline/import'
+require 'tabularize'
 
 module Pwrb
   class CLI

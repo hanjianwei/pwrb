@@ -3,8 +3,8 @@
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
 require 'pwrb'
-require 'optparse'
 require 'highline/import'
+require 'optparse'
 
 begin
   options = {}
