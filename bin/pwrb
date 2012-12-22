@@ -29,6 +29,11 @@ begin
     opts.on('-p', '--print', 'Print password in plain text') do
       options[:print] = true
     end
+
+    opts.on('-v', '--version', 'Version information') do
+      puts Pwrb::VERSION
+      exit
+    end
   end
 
   # Read command line into `option` hash
