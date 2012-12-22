@@ -88,7 +88,7 @@
           <file leaf-file-name="pwrb" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/bin/pwrb">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="31" column="0" selection-start="774" selection-end="774" vertical-scroll-proportion="0.4936306">
+                <state line="20" column="0" selection-start="438" selection-end="438" vertical-scroll-proportion="0.31847134">
                   <folding />
                 </state>
               </provider>
@@ -670,7 +670,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/pwrb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="0" selection-start="774" selection-end="774" vertical-scroll-proportion="0.4936306">
+        <state line="20" column="0" selection-start="438" selection-end="438" vertical-scroll-proportion="0.31847134">
           <folding />
         </state>
       </provider>

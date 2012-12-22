@@ -18,6 +18,8 @@ Or install it yourself as:
 
 ## Usage
 
+You should [create a valid gpg key](http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html#ss3.1) before using this gem. 
+
 ``` sh
 pwrb -h
 ```
