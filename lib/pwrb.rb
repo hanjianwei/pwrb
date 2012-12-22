@@ -1,4 +1,6 @@
 require "pwrb/version"
+require 'pwrb/db'
+require 'pwrb/cli'
 
 require 'clipboard'
 require 'gpgme'
@@ -9,56 +11,34 @@ require 'securerandom'
 
 module Pwrb
   class PasswordDB
-    def initialize(options=nil)
-      @filename = File.expand_path('~/.pw')
-      @filename = File.readlink(@filename) if File.symlink?(@filename)
-      @options = options
+    def initialize(filename, password)
+      @filename = filename
+      @passwords = []
       @crypto = GPGME::Crypto.new
 
-      read_safe
-      @selected = @data.select{ |item| match(item, @options) }
-    end
-
-    def read_safe(password=nil)
-      if File.file?(@filename)
-        @password = password || ask_for_password("Enter master passphrase")
-        plain_data = @crypto.decrypt(File.open(@filename), :password => @password).to_s
-        @data = JSON.parse(plain_data, :symbolize_names => true)
+      # Read encrypted file
+      if File.exist?(filename)
+        text = @crypto.decrypt(filename, :password => password).to_s
+        @passwords = JSON.parse(text, :symbolize_names => true)
       else
-        create_safe(password)
+        FileUtils.mkdir_p(File.dirname(filename))
+        save
+        File.chmod(0600, filename)
       end
     end
 
-    def write_safe
-      plain_data = JSON.generate(@data)
-      plain_data.force_encoding('ASCII-8BIT')
-      @crypto.encrypt(plain_data, :output => File.open(@filename, 'w+'))
-    end
-
-    def create_safe(password=nil)
-      puts "No password file detected, creating one at #{@filename}"
-      @password = ask_for_password("Enter master passphrase", confirm = true) unless @password == password
-
-      FileUtils.mkdir_p(File.dirname(@filename))
-      @data = []
-      write_safe
-      File.chmod(0600, @filename)
+    def save
+      text = JSON.generate(@passwords)
+      text.force_encoding('ASCII-8BIT')
+      @crypto.encrypt(text, :output => File.open(@filename, 'w+'))
     end
 
     def to_s
-      "<*******>"
+      "<*>"
     end
 
-    def user_match(item, user)
-      /#{user}/i =~ item[:user]
-    end
-
-    def site_match(item, site)
-      /#{site}/i =~ item[:site] || /#{site}/i =~ item[:url]
-    end
-
-    def match(item, options)
-      user_match(item, options[:user]) && site_match(item, options[:site])
+    def query(user, site)
+      @passwords.select {|p| /#{user}/i =~ p[:user] && (/#{site}/i =~ p[:site] || /#{site}/i =~ p[:url]) }
     end
 
     def ask_for_password(prompt, confirm=false)

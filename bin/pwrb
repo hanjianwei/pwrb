@@ -4,11 +4,12 @@ $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
 require 'pwrb'
 require 'optparse'
+require 'highline/import'
 
 begin
   options = {}
 
-  optparse = OptionParser.new do |opts|
+  opts = OptionParser.new do |opts|
     opts.banner = "Usage: pw add|update|edit|list|copy|remove [user@domain] [options]"
     opts.separator ""
     opts.separator "Specific options:"
@@ -18,30 +19,40 @@ begin
       exit
     end
 
-    opts.on('-p', '--print', 'Print password in text') do
+    # Default password file is "~/.pw"
+    options[:file] = File.join(Dir.home, '.pw')
+    opts.on('-f', '--file FILE', 'Use FILE as as password') do |f|
+      options[:file] = File.expand_path(f)
+    end
+
+    options[:print] = false
+    opts.on('-p', '--print', 'Print password in plain text') do
       options[:print] = true
     end
   end
 
-  optparse.parse!
+  # Read command line into `option` hash
+  opts.parse!
 
-  aliases = {'cp' => 'copy',
-             'ls' => 'list',
-             'up' => 'update',
+  # Handle commands
+  aliases = {'cp'     => 'copy',
+             'ls'     => 'list',
+             'up'     => 'update',
              'create' => 'add',
-             'rm' => 'remove',
+             'rm'     => 'remove',
              'delete' => 'remove',
-             'del' => 'remove'}
+             'del'    => 'remove'}
 
   cmd = ARGV.shift
   cmd = aliases[cmd] if aliases[cmd]
 
   unless ['list', 'copy', 'update', 'remove', 'add', 'edit'].include?(cmd)
     puts "Command not found: #{cmd}" if cmd
-    puts optparse
+    puts opts
     exit 1
   end
 
+  # Search pattern (optional), e.g. foo@github
   pattern = ARGV.shift
   abort("Unknown arguments: #{ARGV}") unless ARGV.empty?
 
@@ -50,9 +61,14 @@ begin
 
     abort("Unknow pattern: #{pattern}") if args.length > 2
 
-    options[:site] = args.last
-    options[:user] = args.first if args.length == 2
+    site = args.last
+    user = args.first if args.length == 2
   end
 
-  Pwrb::PasswordDB.new(options).send cmd
+  # Open password database, master password needed
+  master_password = ask("Enter master passphrase: ") { |q| q.echo = false }
+  db = Pwrb::DB.new(options[:file], master_password)
+  cli = Pwrb::CLI.new(db, options[:print])
+
+  cli.send cmd, user, site
 end
