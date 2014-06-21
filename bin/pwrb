@@ -10,7 +10,7 @@ begin
   options = {}
 
   opts = OptionParser.new do |opts|
-    opts.banner = "Usage: pw add|update|edit|list|copy|remove [user@domain] [options]"
+    opts.banner = "Usage: pwrb add|update|edit|list|copy|remove [user@domain] [options]"
     opts.separator ""
     opts.separator "Specific options:"
 
