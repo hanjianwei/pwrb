@@ -1,5 +1,7 @@
 # Pwrb
 
+[![Gem Version](https://img.shields.io/gem/v/pwrb.svg)](https://rubygems.org/gems/pwrb)
+
 Pwrb is a password management gem based on GPG.
 
 ## Installation
@@ -18,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-You should [create a valid gpg key](http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html#ss3.1) before using this gem. 
+You should [create a valid gpg key](http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html#ss3.1) before using this gem.
 
 ``` sh
 pwrb -h
